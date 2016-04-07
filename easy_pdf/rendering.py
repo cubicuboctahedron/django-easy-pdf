@@ -33,14 +33,14 @@ def fetch_resources(uri, rel):
     :raises: :exc:`~easy_pdf.exceptions.UnsupportedMediaPathException`
     """
     if settings.STATIC_URL and uri.startswith(settings.STATIC_URL):
-        if settings.DEBUG:
-            path = finders.find(uri.replace(settings.STATIC_URL, ""))
-        else:
-            path = os.path.join(settings.STATIC_ROOT, uri.replace(settings.STATIC_URL, ""))
+        path = finders.find(uri.replace(settings.STATIC_URL, ""))
     elif settings.MEDIA_URL and uri.startswith(settings.MEDIA_URL):
         path = os.path.join(settings.MEDIA_ROOT, uri.replace(settings.MEDIA_URL, ""))
     else:
         path = os.path.join(settings.STATIC_ROOT, uri)
+
+    if not os.path.isfile(path):
+        path = finders.find(uri.replace(settings.STATIC_URL, ""))
 
     if not os.path.isfile(path):
         raise UnsupportedMediaPathException(
